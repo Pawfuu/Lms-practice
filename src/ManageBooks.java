@@ -1,10 +1,14 @@
 
+import java.sql.PreparedStatement;
 import java.sql.DriverManager;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
+import jframe.DBConnection;
+
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -20,8 +24,8 @@ public class ManageBooks extends javax.swing.JFrame {
     /**
      * Creates new form ManageBooks
      */
-    String book_name, author;
-    int book_id, quantity;
+    String bookName, author;
+    int bookId, quantity;
     DefaultTableModel model;
     public ManageBooks() {
         initComponents();
@@ -50,8 +54,128 @@ public class ManageBooks extends javax.swing.JFrame {
            }
            
         } catch (Exception e) {
+            // Handle the exception and print an error message
             e.printStackTrace();
         }
+    }
+    
+    // to add book to book_details table
+    public boolean addBook(){
+        boolean isAdded = false;
+        //to get the text typed in the textbox
+        bookId = Integer.parseInt(txt_bookId.getText());
+        bookName = txt_bookName.getText();
+        author = txt_authorName.getText();
+        quantity = Integer.parseInt(txt_quantity.getText());
+        
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "insert into book_details values(?,?,?,?)";
+            
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, bookId);
+            pst.setString(2, bookName);
+            pst.setString(3, author);
+            pst.setInt(4, quantity);
+            
+            /*
+            SQL COMMANDS
+            non-select query refers to any SQL statemnt that does not RETRIEVE date from a database. Instead these queries typically 
+            perform actions that MODIFY the databse or its structure. 
+            INSERT - adds new record ito a table
+            UPDATE - modifies existing records in a table
+            DELETE - removes records from a t able
+            CREATE - creates a new table or database
+            ALTER -  modifies the structure of an existing tbale (e.g., adding a column)
+            DROP - deletes a table or database
+            */
+            
+            int rowCount = pst.executeUpdate();
+            if (rowCount > 0){
+                  isAdded = true;
+            }
+            else{
+                  isAdded = false;
+            }
+            
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+        return isAdded;
+    }  
+    
+    
+    //to update book details 
+    public boolean updateBook(){
+         boolean isUpdated = false;
+         //to get the text typed in the textbox
+         bookId = Integer.parseInt(txt_bookId.getText());
+         bookName = txt_bookName.getText();
+         author = txt_authorName.getText();
+         //converts string into integer
+         quantity = Integer.parseInt(txt_quantity.getText());
+         
+         try {
+            Connection con = DBConnection.getConnection();
+            // WHERE - filter records in a sql query and adds a condition to include only the rows that meet the specified criteria
+            String sql = "update book_details set book_name = ?, author = ?, quantity = ? where book_id = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, bookName);
+            pst.setString(2, author);
+            pst.setInt(3, quantity);
+            pst.setInt(4, bookId);
+            
+            //It checks if the command was updated
+            int rowCount = pst.executeUpdate();
+            if (rowCount > 0){
+                  isUpdated = true;
+            }else{
+                isUpdated = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         return isUpdated;
+    }
+    
+    //to delete book in book_details table
+    public boolean deleteBook(){
+         boolean isDeleted = false;
+         bookId = Integer.parseInt(txt_bookId.getText());
+    
+         try {
+             // (1) ESTABLISH CONNECTION 
+            Connection con = DBConnection.getConnection();
+            
+            // (2)  PUT PLACEHOLDERS(' ? ') FOR PARAMETERS
+            String sql = "delete from book_details where book_id = ? ";
+            //prepStatement string named sql goes to database MySQL
+            PreparedStatement pst = con.prepareStatement(sql);
+            
+            // (3) SETS THE VALUES FOR THE PLACEHOLDER
+            pst.setInt(1, bookId);
+            
+            //(4) EXECUTES THE UPDATE. IT RETURNS AN 'INT' INDICATING THE NUMBER OF ROWS AFFECTED
+            int rowCount = pst.executeUpdate();
+            
+            if(rowCount > 0){
+            isDeleted = true;
+            }else{
+            isDeleted = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         return isDeleted;
+    }
+    
+    //method to clear table
+    public void clearTable(){
+         DefaultTableModel model = (DefaultTableModel) tbl_bookDetails.getModel();
+         model.setRowCount(0);
     }
 
     /**
@@ -177,14 +301,29 @@ public class ManageBooks extends javax.swing.JFrame {
 
         rSMaterialButtonCircle1.setBackground(new java.awt.Color(255, 51, 51));
         rSMaterialButtonCircle1.setText("DELETE");
+        rSMaterialButtonCircle1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSMaterialButtonCircle1ActionPerformed(evt);
+            }
+        });
         jPanel1.add(rSMaterialButtonCircle1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 660, 130, 70));
 
         rSMaterialButtonCircle2.setBackground(new java.awt.Color(255, 51, 51));
         rSMaterialButtonCircle2.setText("ADD");
+        rSMaterialButtonCircle2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSMaterialButtonCircle2ActionPerformed(evt);
+            }
+        });
         jPanel1.add(rSMaterialButtonCircle2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 660, 130, 70));
 
         rSMaterialButtonCircle3.setBackground(new java.awt.Color(255, 51, 51));
         rSMaterialButtonCircle3.setText("UPDATE");
+        rSMaterialButtonCircle3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSMaterialButtonCircle3ActionPerformed(evt);
+            }
+        });
         jPanel1.add(rSMaterialButtonCircle3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 660, 130, 70));
 
         txt_bookName.setBackground(new java.awt.Color(102, 102, 255));
@@ -349,6 +488,36 @@ public class ManageBooks extends javax.swing.JFrame {
         txt_quantity.setText(model.getValueAt(rowNo, 3).toString());
         
     }//GEN-LAST:event_tbl_bookDetailsMouseClicked
+
+    private void rSMaterialButtonCircle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle2ActionPerformed
+        if (addBook() == true) {
+            JOptionPane.showMessageDialog(this, "Book Added");
+            clearTable();
+            setBookDetailsToTable();
+        }else{
+            JOptionPane.showMessageDialog(this, "Book Addition Failed");
+        }
+    }//GEN-LAST:event_rSMaterialButtonCircle2ActionPerformed
+
+    private void rSMaterialButtonCircle3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle3ActionPerformed
+        if (updateBook() == true) {
+            JOptionPane.showMessageDialog(this, "Book Updated");
+            clearTable();
+            setBookDetailsToTable();
+        }else{
+            JOptionPane.showMessageDialog(this, "Book Updation Failed");
+        }
+    }//GEN-LAST:event_rSMaterialButtonCircle3ActionPerformed
+
+    private void rSMaterialButtonCircle1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle1ActionPerformed
+         if (deleteBook() == true) {
+            JOptionPane.showMessageDialog(this, "Book Deleted");
+            clearTable();
+            setBookDetailsToTable();
+        }else{
+            JOptionPane.showMessageDialog(this, "Book DeletionFailed");
+        }
+    }//GEN-LAST:event_rSMaterialButtonCircle1ActionPerformed
 
     /**
      * @param args the command line arguments
