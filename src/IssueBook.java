@@ -133,8 +133,8 @@ public class IssueBook extends javax.swing.JFrame {
     }
     
     //updating the amount of books issued
-    public void updateBookCount(){
-          int bookId = Integer.parseInt(txt_bookId.getText());
+    public void updateBookCount() {
+        int bookId = Integer.parseInt(txt_bookId.getText());
         try {
             //(1) establish database connection
             Connection con = DBConnection.getConnection();
@@ -143,21 +143,48 @@ public class IssueBook extends javax.swing.JFrame {
             //(3) Prepare the SQL statement
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, bookId);
-            
+
             //(4) EXECUTES THE UPDATE. IT RETURNS AN 'INT' INDICATING THE NUMBER OF ROWS AFFECTED
             int RowCount = pst.executeUpdate();
-            if(RowCount > 0 ){
-            JOptionPane.showMessageDialog(this, "Book count updated");
-            int initialCount = Integer.parseInt(lbl_quantity.getText());
-            lbl_quantity.setText(Integer.toString(initialCount - 1));
-            }else{
-            JOptionPane.showMessageDialog(this, "Can't update book count");
+            if (RowCount > 0) {
+                JOptionPane.showMessageDialog(this, "Book count updated");
+                int initialCount = Integer.parseInt(lbl_quantity.getText());
+                lbl_quantity.setText(Integer.toString(initialCount - 1));
+            } else {
+                JOptionPane.showMessageDialog(this, "Can't update book count");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
+    // RESULT SET SINCE IT NEEDS TO SEE IF DATA RECORD EXIST FROM DATABASE (MYSQL)
+    //checking wether book already allocated or not to a user
+    public boolean isAlreadyIssued() {
+        boolean isAlreadyIssued = false;
+        int bookId = Integer.parseInt(txt_bookId.getText());
+        int studentId = Integer.parseInt(txt_studentId.getText());
+
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "Select * from issue_book_details where book_id = ? and student_id = ? and status = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, bookId);
+            pst.setInt(2, studentId);
+            pst.setString(3, "pending");
+        
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                isAlreadyIssued = true;
+            } else {
+                isAlreadyIssued = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isAlreadyIssued;
+    }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -606,7 +633,9 @@ public class IssueBook extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel32MouseClicked
 
     private void jLabel41MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel41MouseClicked
-        // TODO add your handling code here:
+        HomePage home = new HomePage();
+        home.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jLabel41MouseClicked
 
     private void jLabel49MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel49MouseClicked
@@ -622,12 +651,20 @@ public class IssueBook extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_studentIdActionPerformed
 
     private void rSMaterialButtonCircle1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle1ActionPerformed
-       if(issueBook() == true){
-           JOptionPane.showMessageDialog(this, "Book issued successfully");
-           
-       } else{
-           JOptionPane.showMessageDialog(this, "Can't issue the book");
-       }
+        if (lbl_quantity.getText().equals("0")) {
+            JOptionPane.showMessageDialog(this, "Book is not available");
+        } else {
+            if (isAlreadyIssued() == false) {
+                if (issueBook() == true) {
+                    updateBookCount(); // call updateBookCount here 
+                    JOptionPane.showMessageDialog(this, "Book issued successfully");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Can't issue the book");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "This student already issued this book");
+            }
+        }
     }//GEN-LAST:event_rSMaterialButtonCircle1ActionPerformed
 
     private void txt_bookIdFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_bookIdFocusLost
@@ -640,7 +677,6 @@ public class IssueBook extends javax.swing.JFrame {
     private void txt_studentIdFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_studentIdFocusLost
       if (!txt_studentId.getText().equals("")){
             getStudentDetails();
-            updateBookCount();
     }//GEN-LAST:event_txt_studentIdFocusLost
     }
     /**
