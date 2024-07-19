@@ -195,12 +195,6 @@ public class IssueBook extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel_main = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        panel_main1 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
-        jLabel32 = new javax.swing.JLabel();
         panel_main2 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jPanel16 = new javax.swing.JPanel();
@@ -247,70 +241,6 @@ public class IssueBook extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        panel_main.setBackground(new java.awt.Color(255, 255, 255));
-        panel_main.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel7.setBackground(new java.awt.Color(102, 102, 255));
-
-        jLabel9.setFont(new java.awt.Font("Verdana", 0, 35)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setText("X");
-        jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel9MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
-                .addComponent(jLabel9)
-                .addGap(30, 30, 30))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jLabel9)
-                .addGap(0, 6, Short.MAX_VALUE))
-        );
-
-        panel_main.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1320, 0, 90, 50));
-
-        panel_main1.setBackground(new java.awt.Color(255, 255, 255));
-        panel_main1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel14.setBackground(new java.awt.Color(102, 102, 255));
-
-        jLabel32.setFont(new java.awt.Font("Verdana", 0, 35)); // NOI18N
-        jLabel32.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel32.setText("X");
-        jLabel32.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel32MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
-                .addComponent(jLabel32)
-                .addGap(30, 30, 30))
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addComponent(jLabel32)
-                .addGap(0, 6, Short.MAX_VALUE))
-        );
-
-        panel_main1.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1320, 0, 90, 50));
 
         panel_main2.setBackground(new java.awt.Color(255, 255, 255));
         panel_main2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -614,23 +544,11 @@ public class IssueBook extends javax.swing.JFrame {
         });
         panel_main2.add(rSMaterialButtonCircle1, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 610, 400, 70));
 
-        panel_main1.add(panel_main2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1410, 810));
-
-        panel_main.add(panel_main1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1410, 810));
-
-        getContentPane().add(panel_main, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1410, 810));
+        getContentPane().add(panel_main2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         setSize(new java.awt.Dimension(1411, 803));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-        System.exit(0);
-    }//GEN-LAST:event_jLabel9MouseClicked
-
-    private void jLabel32MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel32MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel32MouseClicked
 
     private void jLabel41MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel41MouseClicked
         HomePage home = new HomePage();
@@ -639,7 +557,7 @@ public class IssueBook extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel41MouseClicked
 
     private void jLabel49MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel49MouseClicked
-        // TODO add your handling code here:
+       System.exit(0);
     }//GEN-LAST:event_jLabel49MouseClicked
 
     private void txt_bookIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_bookIdActionPerformed
@@ -718,7 +636,6 @@ public class IssueBook extends javax.swing.JFrame {
     private rojeru_san.componentes.RSDateChooser date_dueDate;
     private rojeru_san.componentes.RSDateChooser date_issueDate;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
@@ -737,8 +654,6 @@ public class IssueBook extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -746,7 +661,6 @@ public class IssueBook extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel lbl_author;
     private javax.swing.JLabel lbl_bookError;
     private javax.swing.JLabel lbl_bookId;
@@ -757,8 +671,6 @@ public class IssueBook extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_studentError;
     private javax.swing.JLabel lbl_studentId;
     private javax.swing.JLabel lbl_studentName;
-    private javax.swing.JPanel panel_main;
-    private javax.swing.JPanel panel_main1;
     private javax.swing.JPanel panel_main2;
     private rojerusan.RSMaterialButtonCircle rSMaterialButtonCircle1;
     private app.bolivia.swing.JCTextField txt_bookId;
