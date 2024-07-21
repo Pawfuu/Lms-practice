@@ -356,6 +356,17 @@ public class HomePage extends javax.swing.JFrame {
         jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_View_Details_26px.png"))); // NOI18N
         jLabel18.setText("   View Records");
         jLabel18.setToolTipText("");
+        jLabel18.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel18MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jLabel18MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jLabel18MouseExited(evt);
+            }
+        });
         jPanel17.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, -1));
 
         jPanel3.add(jPanel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 340, 60));
@@ -370,7 +381,7 @@ public class HomePage extends javax.swing.JFrame {
         jLabel20.setToolTipText("");
         jPanel19.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, -1));
 
-        jPanel3.add(jPanel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 340, 60));
+        jPanel3.add(jPanel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 550, 340, 60));
 
         jPanel21.setBackground(new java.awt.Color(51, 51, 51));
         jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -652,6 +663,20 @@ public class HomePage extends javax.swing.JFrame {
     private void jLabel16MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel16MouseExited
         jPanel15.setBackground(mouseExitColor);
     }//GEN-LAST:event_jLabel16MouseExited
+
+    private void jLabel18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel18MouseClicked
+        ViewAllRecord records = new ViewAllRecord();
+        records.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel18MouseClicked
+
+    private void jLabel18MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel18MouseEntered
+         jPanel17.setBackground(mouseEnterColor);
+    }//GEN-LAST:event_jLabel18MouseEntered
+
+    private void jLabel18MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel18MouseExited
+        jPanel17.setBackground(mouseExitColor);
+    }//GEN-LAST:event_jLabel18MouseExited
 
     /**
      * @param args the command line arguments
