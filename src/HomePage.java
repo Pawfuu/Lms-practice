@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Date;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -36,6 +37,7 @@ public class HomePage extends javax.swing.JFrame {
         showPieChart();
         setStudentDetailsToTable();
         setBookDetailsToTable();
+        setDataToCards();
 
     }
     
@@ -86,17 +88,62 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
     
+    public void setDataToCards(){
+        //using simple statement can execute multiple queries
+        Statement st = null;
+        ResultSet rs = null;
+        
+        long l =System.currentTimeMillis();
+        Date todaysDate = new Date(l);
+        
+        try {
+            Connection con = DBConnection.getConnection();
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM book_details");
+            //gets the value of last the last row 
+            rs.last();
+            //converts it to int shows to the label 
+            lbl_noOfBooks.setText(Integer.toString(rs.getRow()));
+            
+            //total the amount of students registered into the system 
+            rs = st.executeQuery("SELECT * FROM student_details");
+            rs.last();
+            lbl_noOfStudents.setText(Integer.toString(rs.getRow()));
+            
+            //total the amount students that borrowed a book 
+            rs = st.executeQuery("SELECT * FROM issue_book_details where status = 'pending' ");
+            rs.last();
+            lbl_issuedBooks.setText(Integer.toString(rs.getRow()));
+            
+            rs = st.executeQuery("SELECT * FROM issue_book_details WHERE due_date < ' " + todaysDate +" ' and STATUS = 'pending' ");
+            rs.last();
+            lbl_defaulterList.setText(Integer.toString(rs.getRow()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    }
+    
     public void showPieChart(){
         
         //create dataset
       DefaultPieDataset barDataset = new DefaultPieDataset( );
-      barDataset.setValue( "IPhone 5s" , new Double( 20 ) );  
-      barDataset.setValue( "SamSung Grand" , new Double( 20 ) );   
-      barDataset.setValue( "MotoG" , new Double( 40 ) );    
-      barDataset.setValue( "Nokia Lumia" , new Double( 10 ) );  
+      
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "Select book_name , count(*) as issue_count from issue_book_details group by book_id";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            
+            while (rs.next()){
+                   barDataset.setValue(rs.getString("book_name"), new Double(rs.getDouble("issue_count")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
       
       //create chart
-       JFreeChart piechart = ChartFactory.createPieChart("mobile sales",barDataset, false,true,false);//explain
+       JFreeChart piechart = ChartFactory.createPieChart("Books Issued",barDataset, false,true,false);//explain
       
         PiePlot piePlot =(PiePlot) piechart.getPlot();
       
@@ -155,16 +202,16 @@ public class HomePage extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
+        lbl_noOfStudents = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
+        lbl_issuedBooks = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
+        lbl_noOfBooks = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
-        jLabel21 = new javax.swing.JLabel();
+        lbl_defaulterList = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
@@ -265,7 +312,7 @@ public class HomePage extends javax.swing.JFrame {
         jLabel9.setToolTipText("");
         jPanel8.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
 
-        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 660, 340, 60));
+        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 720, 340, 60));
 
         jPanel9.setBackground(new java.awt.Color(51, 51, 51));
         jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -367,7 +414,7 @@ public class HomePage extends javax.swing.JFrame {
                 jLabel18MouseExited(evt);
             }
         });
-        jPanel17.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, -1));
+        jPanel17.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
 
         jPanel3.add(jPanel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 340, 60));
 
@@ -379,9 +426,20 @@ public class HomePage extends javax.swing.JFrame {
         jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Books_26px.png"))); // NOI18N
         jLabel20.setText("   View Issued Books");
         jLabel20.setToolTipText("");
-        jPanel19.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, -1));
+        jLabel20.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel20MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jLabel20MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jLabel20MouseExited(evt);
+            }
+        });
+        jPanel19.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
 
-        jPanel3.add(jPanel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 550, 340, 60));
+        jPanel3.add(jPanel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 560, 340, 60));
 
         jPanel21.setBackground(new java.awt.Color(51, 51, 51));
         jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -391,9 +449,20 @@ public class HomePage extends javax.swing.JFrame {
         jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Conference_26px.png"))); // NOI18N
         jLabel22.setText("   Defaulter List");
         jLabel22.setToolTipText("");
-        jPanel21.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, -1));
+        jLabel22.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel22MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jLabel22MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jLabel22MouseExited(evt);
+            }
+        });
+        jPanel21.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
 
-        jPanel3.add(jPanel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 600, 340, 60));
+        jPanel3.add(jPanel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 640, 340, 60));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -401,10 +470,10 @@ public class HomePage extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(240, 240, 240));
         jPanel6.setBorder(javax.swing.BorderFactory.createMatteBorder(15, 0, 0, 0, new java.awt.Color(102, 102, 255)));
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_People_50px.png"))); // NOI18N
-        jLabel8.setText("10");
+        lbl_noOfStudents.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
+        lbl_noOfStudents.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_noOfStudents.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_People_50px.png"))); // NOI18N
+        lbl_noOfStudents.setText("10");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -412,14 +481,14 @@ public class HomePage extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(67, 67, 67)
-                .addComponent(jLabel8)
+                .addComponent(lbl_noOfStudents)
                 .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel8)
+                .addComponent(lbl_noOfStudents)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -438,10 +507,10 @@ public class HomePage extends javax.swing.JFrame {
         jPanel10.setBackground(new java.awt.Color(240, 240, 240));
         jPanel10.setBorder(javax.swing.BorderFactory.createMatteBorder(15, 0, 0, 0, new java.awt.Color(255, 51, 51)));
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Sell_50px.png"))); // NOI18N
-        jLabel15.setText("10");
+        lbl_issuedBooks.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
+        lbl_issuedBooks.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_issuedBooks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Sell_50px.png"))); // NOI18N
+        lbl_issuedBooks.setText("10");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -449,14 +518,14 @@ public class HomePage extends javax.swing.JFrame {
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(67, 67, 67)
-                .addComponent(jLabel15)
+                .addComponent(lbl_issuedBooks)
                 .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel15)
+                .addComponent(lbl_issuedBooks)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -470,10 +539,10 @@ public class HomePage extends javax.swing.JFrame {
         jPanel12.setBackground(new java.awt.Color(240, 240, 240));
         jPanel12.setBorder(javax.swing.BorderFactory.createMatteBorder(15, 0, 0, 0, new java.awt.Color(255, 51, 51)));
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
-        jLabel19.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Book_Shelf_50px.png"))); // NOI18N
-        jLabel19.setText("10");
+        lbl_noOfBooks.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
+        lbl_noOfBooks.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_noOfBooks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_Book_Shelf_50px.png"))); // NOI18N
+        lbl_noOfBooks.setText("10");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -481,14 +550,14 @@ public class HomePage extends javax.swing.JFrame {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGap(67, 67, 67)
-                .addComponent(jLabel19)
+                .addComponent(lbl_noOfBooks)
                 .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel19)
+                .addComponent(lbl_noOfBooks)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -497,10 +566,10 @@ public class HomePage extends javax.swing.JFrame {
         jPanel14.setBackground(new java.awt.Color(240, 240, 240));
         jPanel14.setBorder(javax.swing.BorderFactory.createMatteBorder(15, 0, 0, 0, new java.awt.Color(102, 102, 255)));
 
-        jLabel21.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_List_of_Thumbnails_50px.png"))); // NOI18N
-        jLabel21.setText("10");
+        lbl_defaulterList.setFont(new java.awt.Font("Segoe UI Symbol", 0, 50)); // NOI18N
+        lbl_defaulterList.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_defaulterList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/adminIcons/icons8_List_of_Thumbnails_50px.png"))); // NOI18N
+        lbl_defaulterList.setText("10");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -508,14 +577,14 @@ public class HomePage extends javax.swing.JFrame {
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addGap(73, 73, 73)
-                .addComponent(jLabel21)
+                .addComponent(lbl_defaulterList)
                 .addContainerGap(79, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                 .addContainerGap(31, Short.MAX_VALUE)
-                .addComponent(jLabel21)
+                .addComponent(lbl_defaulterList)
                 .addGap(27, 27, 27))
         );
 
@@ -600,7 +669,8 @@ public class HomePage extends javax.swing.JFrame {
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
 
-        pack();
+        setSize(new java.awt.Dimension(1910, 1030));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
@@ -678,6 +748,34 @@ public class HomePage extends javax.swing.JFrame {
         jPanel17.setBackground(mouseExitColor);
     }//GEN-LAST:event_jLabel18MouseExited
 
+    private void jLabel22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel22MouseClicked
+        DefaulterList late = new DefaulterList();
+        late.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel22MouseClicked
+
+    private void jLabel22MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel22MouseEntered
+        jPanel21.setBackground(mouseEnterColor);
+    }//GEN-LAST:event_jLabel22MouseEntered
+
+    private void jLabel22MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel22MouseExited
+        jPanel21.setBackground(mouseExitColor);
+    }//GEN-LAST:event_jLabel22MouseExited
+
+    private void jLabel20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel20MouseClicked
+        ViewIssuedBooks issuedBooks = new ViewIssuedBooks();
+        issuedBooks.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel20MouseClicked
+
+    private void jLabel20MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel20MouseEntered
+        jPanel19.setBackground(mouseEnterColor);
+    }//GEN-LAST:event_jLabel20MouseEntered
+
+    private void jLabel20MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel20MouseExited
+         jPanel19.setBackground(mouseExitColor);
+    }//GEN-LAST:event_jLabel20MouseExited
+
     /**
      * @param args the command line arguments
      */
@@ -720,14 +818,11 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -737,7 +832,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -759,6 +853,10 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lbl_defaulterList;
+    private javax.swing.JLabel lbl_issuedBooks;
+    private javax.swing.JLabel lbl_noOfBooks;
+    private javax.swing.JLabel lbl_noOfStudents;
     private javax.swing.JPanel panelPieChart;
     private rojeru_san.complementos.RSTableMetro tbl_bookDetails;
     private rojeru_san.complementos.RSTableMetro tbl_studentDetails;
